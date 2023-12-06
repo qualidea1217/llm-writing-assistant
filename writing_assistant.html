@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Writing Assistant</title>
+    <style>
+        /* Base Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: #e8e8e8;
+        }
+
+        header, footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 1em 0;
+        }
+
+        header h1 {
+            margin: 0;
+        }
+
+        /* Content container styling */
+        .content-container {
+            display: flex;
+        }
+
+        /* Sidebar styling */
+        .sidebar {
+            position: fixed; /* Fixes the sidebar position relative to the viewport */
+            top: 0; /* Aligns the top of the sidebar with the top of the viewport */
+            right: 0; /* Aligns the sidebar to the right side of the viewport */
+            height: 100vh; /* Full height of the viewport */
+            width: 200px; /* Adjust width as needed */
+            background-color: #f4f4f4; /* Background color for sidebar */
+            padding: 20px;
+            box-sizing: border-box; /* Includes padding in width calculation */
+            overflow-y: auto; /* Allows scrolling within the sidebar if content overflows */
+        }
+
+        /* Sidebar buttons styling */
+        .sidebar button {
+            display: block; /* Makes buttons block level */
+            width: 100%; /* Full width */
+            padding: 10px;
+            margin-bottom: 10px; /* Space between buttons */
+            cursor: pointer;
+        }
+
+        .sidebar button:hover {
+            background-color: #ddd; /* Hover effect */
+        }
+
+        main {
+            flex: 1;
+            margin-right: 220px; /* Adjust margin to prevent main content from being hidden behind the fixed sidebar */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 20px;
+        }
+
+        .card {
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1em;
+            padding: 1em;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 800px;
+        }
+
+        .card input {
+            width: calc(100% - 20px); /* Adjust the width to account for margins */
+            padding: 10px;
+            margin: 10px auto; /* Set uniform top/bottom margins and auto left/right margins */
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        /* Text Input */
+        .text-input-container {
+            padding: 1em;
+        }
+
+        .text-input-container input, .text-input-container textarea {
+            width: calc(100% - 20px); /* Adjust the width to account for margins */
+            padding: 10px;
+            margin: 10px auto; /* Set uniform top/bottom margins and auto left/right margins */
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            height: 300px; /* Adjusted height for textarea */
+        }
+
+        .text-input-container button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            background-color: #5cb85c;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .text-input-container button:hover {
+            background-color: #4cae4c;
+        }
+
+        /* Contact Form */
+        .contact-container {
+            padding: 1em;
+        }
+
+        .contact-container input, .contact-container textarea {
+            width: calc(100% - 20px); /* Adjust the width to account for margins */
+            padding: 10px;
+            margin: 10px auto; /* Set uniform top/bottom margins and auto left/right margins */
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        .contact-container button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            background-color: #5cb85c;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .contact-container button:hover {
+            background-color: #4cae4c;
+        }
+
+        .api-response-container {
+            padding: 1em;
+            width: 80%;
+            max-width: 800px;
+            margin: auto; /* Center the container */
+        }
+
+        .api-response-container textarea {
+            width: calc(100% - 20px); /* Adjust the width to account for margins */
+            padding: 10px;
+            margin: 10px auto; /* Set uniform top/bottom margins and auto left/right margins */
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        .api-response-container button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            background-color: #5cb85c;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .highlighted {
+            background-color: #4cae4c; /* Example highlight color */
+            color: white;
+        }
+
+        /* Responsive Design */
+        @media screen and (max-width: 768px) {
+            .content-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: static; /* Resets the position for smaller screens */
+            }
+
+            main {
+                margin-right: 0; /* Resets the margin for smaller screens */
+            }
+
+            .card {
+                width: 95%;
+            }
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>Writing Assistant</h1>
+</header>
+
+<!-- Adding a container to hold both main content and sidebar -->
+<div class="content-container">
+
+    <!-- Sidebar with buttons -->
+    <div class="sidebar">
+        <button id="btn-section2" onclick="scrollToSection('section2')">Grammar Check</button>
+        <button id="btn-section3" onclick="scrollToSection('section3')">Simplification</button>
+        <button id="btn-section4" onclick="scrollToSection('section4')">Translation</button>
+        <button id="btn-section5" onclick="scrollToSection('section5')">Text Input</button>
+        <button id="btn-section6" onclick="scrollToSection('section6')">Feedback</button>
+    </div>
+
+    <!-- Main content -->
+    <main>
+        <section class="card" id="section1">
+            <h2>Welcome to Writing Assistant</h2>
+            <p>Use this tool to improve your writing with advanced analysis and suggestions.</p>
+        </section>
+        <section class="card" id="section2">
+            <h2>Grammar Check</h2>
+            <p>Enhance your writing by checking for grammar errors and style improvements.</p>
+            <div class="api-response-container" id="response-container-section2" style="display: none;">
+                <h3>Grammar Check Result</h3>
+                <textarea id="api-response-section2" readonly style="height: 150px;"></textarea>
+                <button onclick="clearResponse2()">Clear Response</button>
+            </div>
+        </section>
+        <section class="card" id="section3">
+            <h2>Text Simplification</h2>
+            <p>Simplify you text to improve readability.</p>
+            <div class="api-response-container" id="response-container-section3" style="display: none;">
+                <h3>Simplification Result</h3>
+                <textarea id="api-response-section3" readonly style="height: 150px;"></textarea>
+                <button onclick="clearResponse3()">Clear Response</button>
+            </div>
+        </section>
+        <section class="card" id="section4">
+            <h2>Text Translation</h2>
+            <p>Translate your text to specific language.</p>
+            <input type="text" id="target-language" placeholder="Enter the target language">
+            <div class="api-response-container" id="response-container-section4" style="display: none;">
+                <h3>Translation Result</h3>
+                <textarea id="api-response-section4" readonly style="height: 150px;"></textarea>
+                <button onclick="clearResponse4()">Clear Response</button>
+            </div>
+        </section>
+        <section class="card" id="section5">
+            <div class="text-input-container">
+                <h2>Text Analysis</h2>
+                <p>Paste your text here for analysis:</p>
+                <textarea id="text-input" placeholder="Enter text here..."></textarea>
+                <button onclick="analyzeText()">Analyze Text</button>
+                <button onclick="clearText()">Clear Text</button>
+            </div>
+        </section>
+        <section class="card" id="section6">
+            <div class="contact-container">
+                <h2>Contact Us</h2>
+                <input type="text" id="name" placeholder="Your Name">
+                <input type="email" id="email" placeholder="Your Email">
+                <textarea id="message" placeholder="Your Message"></textarea>
+                <button onclick="sendContact()">Send</button>
+            </div>
+        </section>
+    </main>
+
+</div>
+
+<footer>
+    <p>&copy; 2023 Writing Assistant. All rights reserved.</p>
+</footer>
+
+<script>
+    function analyzeText() {
+        var textArea = document.getElementById('text-input');
+        var text = textArea.value;
+        var selectedText = text.substring(textArea.selectionStart, textArea.selectionEnd);
+        // Use selected text if there is a selection, otherwise use all text
+        var textToSend = selectedText.length > 0 && textArea.selectionStart !== textArea.selectionEnd ? selectedText : text;
+
+        if (document.getElementById('btn-section2').classList.contains('highlighted')) {
+            fetch('http://127.0.0.1:5000/grammar_check', { // call API
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({text: textToSend}),
+            })
+                .then(response => response.json())
+                .then(data => { // display response
+                    // Clear the previous response
+                    document.getElementById('api-response-section3').value = '';
+                    // Display the response in the new text box
+                    document.getElementById('api-response-section2').value = data;
+                    // Make the response container visible
+                    document.getElementById('response-container-section2').style.display = 'block';
+                    document.getElementById("section2").scrollIntoView({behavior: 'smooth'});
+                    console.log('Success:', data);
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        } else if (document.getElementById('btn-section3').classList.contains('highlighted')) {
+            fetch('http://127.0.0.1:5000/text_simplification', { // call API
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({text: textToSend}),
+            })
+                .then(response => response.json())
+                .then(data => { // display response
+                    // Clear the previous response
+                    document.getElementById('api-response-section3').value = '';
+                    // Display the response in the new text box
+                    document.getElementById('api-response-section3').value = data;
+                    // Make the response container visible
+                    document.getElementById('response-container-section3').style.display = 'block';
+                    document.getElementById("section3").scrollIntoView({behavior: 'smooth'});
+                    console.log('Success:', data);
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        } else if (document.getElementById('btn-section4').classList.contains('highlighted')) {
+            var targetLanguage = document.getElementById("target-language").value
+            fetch('http://127.0.0.1:5000/text_translation', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({text: textToSend, target_language: targetLanguage}),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // Clear the previous response
+                    document.getElementById('api-response-section4').value = '';
+                    // Display the response in the new text box
+                    document.getElementById('api-response-section4').value = data;
+                    // Make the response container visible
+                    document.getElementById('response-container-section4').style.display = 'block';
+                    document.getElementById("section4").scrollIntoView({behavior: 'smooth'});
+                    console.log('Success:', data);
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        }
+    }
+
+    function sendContact() {
+        var name = document.getElementById('name').value;
+        var email = document.getElementById('email').value;
+        var message = document.getElementById('message').value;
+        alert('Message sent from: ' + name);
+        // Add form submission logic or API call here
+    }
+
+    function highlightButton(selectedButtonId) {
+        // Remove highlight from all buttons
+        var buttons = document.querySelectorAll('.sidebar button');
+        buttons.forEach(function (button) {
+            button.classList.remove('highlighted');
+        });
+
+        // Highlight the selected button
+        var selectedButton = document.getElementById(selectedButtonId);
+        if (selectedButton) {
+            selectedButton.classList.add('highlighted');
+        }
+    }
+
+    // Modify scrollToSection to also highlight the button
+    function scrollToSection(sectionId) {
+        // document.getElementById(sectionId).scrollIntoView({behavior: 'smooth'});
+        highlightButton('btn-' + sectionId);
+    }
+
+    function clearText() {
+        // Clear the main text input
+        document.getElementById('text-input').value = '';
+    }
+
+    function clearResponse2() {
+        // Clear the API response and hide its container
+        document.getElementById('api-response-section2').value = '';
+        document.getElementById('response-container-section2').style.display = 'none';
+    }
+
+    function clearResponse3() {
+        // Clear the API response and hide its container
+        document.getElementById('api-response-section3').value = '';
+        document.getElementById('response-container-section3').style.display = 'none';
+    }
+
+    function clearResponse4() {
+        // Clear the API response and hide its container
+        document.getElementById('api-response-section4').value = '';
+        document.getElementById('response-container-section4').style.display = 'none';
+    }
+
+</script>
+</body>
+</html>
