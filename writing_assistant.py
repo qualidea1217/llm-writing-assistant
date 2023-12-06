@@ -13,7 +13,7 @@ chatgpt as the service provider for AI writing assistant.
 
 
 DEFAULT_MODEL = "gpt-4-1106-preview"  # openai model name
-DEFAULT_API_KEY = "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"  # REMOVE THIS BEFORE PUSH TO GITHUB!!!
+DEFAULT_API_KEY = ""  # REMOVE THIS BEFORE PUSH TO GITHUB!!!
 
 app = Flask(__name__)
 CORS(app)
